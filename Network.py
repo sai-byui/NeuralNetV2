@@ -51,7 +51,18 @@ class Network:
         # Initialize error list
         # Populate error list
         # Request from each output neuron that it change its output based on the error
-        # perform backpropagation (more detailed pseudocode to come)
+        # perform backpropagation
+            # for every weight in the network:
+                # if the weight is connected on the "left side" to an input, then:
+                    # Change the weight according to the backprop calculus - will be different for different types
+                    # of neurons
+                    #Change the bias on that weight, if that's how you implement bias.
+                # else:
+                    # Change the weight according to the backprop calculus - will be different for different types
+                    # of neurons
+                    # Change the bias on that weight, if that's how you implement bias.
+                    # request a delta from the neuron on the "left side" of the weight.
+
         # Get the new error of the system
         # Return that error
         pass
