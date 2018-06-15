@@ -186,11 +186,11 @@ class Network:
 
    def connectLayerExternal(layerList, layerNumber, randomWeights = False):
       if layerNumber > 0:
-         layerList[layerNumber].connectTo(layerList[layerNumber - 1],randomWeights)
-         # for j in range(layerNumber ,0,-1):
-         #    ## Debug
-         #    # print("%d i: %d j: %d" % ((i-j),i,j))
-         #    layerList[layerNumber].connectTo(layerList[layerNumber-j], randomWeights)
+         # layerList[layerNumber].connectTo(layerList[layerNumber - 1],randomWeights)
+         for j in range(layerNumber ,0,-1):
+            ## Debug
+            # print("%d i: %d j: %d" % ((i-j),i,j))
+            layerList[layerNumber].connectTo(layerList[layerNumber-j], randomWeights)
 
    def connectLayers(self, randomWeights = False):
       for i in range(len(self.layers)):

@@ -128,7 +128,7 @@ trainer = GeneticTrainer(learnTruth,truth_table,truth_table_testing)
 #=============================================#
 
 ##############################################
-# Pygame Graphics :) #
+# Pygame Graphics :D #
 #====================#
 
 
@@ -161,7 +161,7 @@ clock = pygame.time.Clock()
 
 t = 0
 
-best_toggle = True
+input_toggle = True
 untrained_toggle = False
 tCase = 0
 
@@ -188,7 +188,7 @@ while 1:
          elif event.key == pygame.K_r:
             trainer.reset()
          elif event.key == pygame.K_SPACE:
-            best_toggle = not best_toggle
+            input_toggle = not input_toggle
 
    clock.tick(120)
    t += 1
@@ -198,11 +198,11 @@ while 1:
    elif trainer.training_data.size > 0:
       network_in = trainer.training_data.get_inputs()[tCase % trainer.training_data.size]
 
-   if best_toggle:
+   if input_toggle:
       trainer.network.setInputs(network_in)
       trainer.network.update()
       graphic = trainer.network.getGraphic()
-   else:
+   else: # Let's just see what it's up to
       graphic = trainer.network.getGraphic()
 
    screen.blit(back_surface,[0,0])
@@ -211,7 +211,12 @@ while 1:
 
    if trainer.error >= 0.0001: 
 
-      if VERBOSE_ERROR and not(t % 100): print(str(trainer.network.ID) + ":" + str(trainer.error))
+      if VERBOSE_ERROR:
+         if not(t % 80) and not(untrained_toggle): 
+            print()
+            print(str(trainer.network.ID) + ":" + str(trainer.error))
+         sys.stdout.write('.')
+         sys.stdout.flush()
 
       trainer.step()
 
