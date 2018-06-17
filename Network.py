@@ -43,6 +43,9 @@ class Network:
       Layer.staticID = temp
       return output
 
+
+   # Particle swarm compatibilty code
+   # -------------------------------------------------------------------
    def set_weights_and_biases_from_swarm_particle_position(self, position):
       pos_index = 0
       for l_i,l in enumerate(self.layers):
@@ -70,15 +73,15 @@ class Network:
             for c_i in range(n.inputCount):
                count += 1
       return count
+   #----------------------------------------------------------------------
 
+   # Calls each layer's calculate function
    def update(self):
       for l in self.layers:
          l.calculate()
-      # self.normalize()
 
    def setInputs(self, values: list):
       self.inputs.setValues(values)
-      # self.inputs.normalize()
 
    def getOutputs(self):
       return outputs.getValues()
@@ -103,6 +106,7 @@ class Network:
 
    # Returns: [reference_to_neuron, weight_index, original_weight] 
    #  in case you need to revert
+   # --------------------------------------------------------------
    def adjustRandomWeight(self, modifier = 1):
       random.seed(random.random())
       l = self.layers[random.randint(1,len(self.layers)-1)]
@@ -138,13 +142,16 @@ class Network:
       temp = [n,n.bias]
       n.setBias(random.uniform(-modifier,modifier))
       return temp
+   # --------------------------------------------------------
 
    # Input is based on the output of changeRandomWeight()
    def revertWeight(self, revertList):
       revertList[0].setWeight(revertList[1],revertList[2])
-
+   # Input is based on the output of changeRandomBias()
    def revertBias(self, revertList):
       revertList[0].setBias(revertList[1])
+
+   #---------------------------------------------------------
 
    def display(self):
       print("#################### Network %d ####################\n" % self.ID)
@@ -175,14 +182,15 @@ class Network:
          if l.ID == ID:
             return l
       return None
-
+   # Layer connection code. Some changes may be needed to smooth changing layer connection archetectures
+   # ----------------------------------------------------------------------------------------------------
    def connectLayer(self, layerNumber, randomWeights = False):
       if layerNumber > 0:
-         self.layers[layerNumber].connectTo(self.layers[layerNumber - 1],randomWeights)
-         # for j in range(layerNumber ,0,-1):
-         #    ## Debug
-         #    # print("%d i: %d j: %d" % ((i-j),i,j))
-         #    self.layers[layerNumber].connectTo(self.layers[layerNumber-j], randomWeights)
+         # self.layers[layerNumber].connectTo(self.layers[layerNumber - 1],randomWeights)
+         for j in range(layerNumber ,0,-1):
+            ## Debug
+            # print("%d i: %d j: %d" % ((i-j),i,j))
+            self.layers[layerNumber].connectTo(self.layers[layerNumber-j], randomWeights)
 
    def connectLayerExternal(layerList, layerNumber, randomWeights = False):
       if layerNumber > 0:
@@ -195,7 +203,11 @@ class Network:
    def connectLayers(self, randomWeights = False):
       for i in range(len(self.layers)):
          self.connectLayer(i,randomWeights)
+   # -----------------------------------------------------------------------------------------------------
 
+   # Returns a fresh network from a list of layer sizes.
+   # This is different from the constructor since the constructor takes 
+   # -------------------------------------------------
    def create(layerSizes: list, randomWeights = False):
       layers = []
       temp = Layer.staticID # We'll store the global ID and set it back later
@@ -211,7 +223,10 @@ class Network:
          l.networkID = output.ID
       Layer.staticID = temp
       return output
+   # ---------------------------------------------------
 
+   # Pygame stuff :)
+   # ---------------------------------------------
    def getGraphic(self):
       r = 10 # Draw radius of a neuron. Everything is scaled to this value
       buff = r + 10 # Give the sides some space

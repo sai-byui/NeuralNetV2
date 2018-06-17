@@ -1,4 +1,4 @@
-from math import e
+from math import e, log
 import random
 
 def sigmoid(x):
@@ -14,15 +14,25 @@ def reLU(x):
    else:
       return x
 
+def mathReLU(x):
+   if x > 100:
+      x = 100
+   elif x < -100:
+      x = -100
+   return log(e**x + 1)
+
 class Neuron:
 
    staticID = 0
    DEFAULT_WEIGHT = 1
 
+   # Neuron Constructor initializes the value, and bias for each neuron.
+   # You must call the connectTo() function in order to set connections.
+   # layerID is -1 by default meaning it doesn't belong to a layer
    def __init__(self, value = 0, bias = 0, layerID = -1):
       self.value = value
       self.bias = bias
-      self.inputConnections = [] #[[Neuron_0,weight_0], [Neuron_1, weight_1], ...]
+      self.inputConnections = [] #[ [ Neuron , weight ], [ Neuron , weight ], ...]
       self.inputCount = 0
       self.layerID = layerID
       self.ID = Neuron.staticID
@@ -42,7 +52,7 @@ class Neuron:
          for c in self.inputConnections:
             self.value += c[0].value * c[1]
          self.value += self.bias
-         self.value = reLU(self.value/2)
+         self.value = mathReLU(self.value)
          # self.value = sigmoid(self.value)
       return self.value
 
@@ -64,14 +74,14 @@ class Neuron:
       for i in range(0,len(weights)):
          self.adjustWeight(i,weights[i])
 
-   def getWeight(self, connectionID):
-      return self.inputConnections[connectionID][1]
-
    def getWeights(self):
       output = []
       for c in self.inputConnections:
          output.append(c[1])
       return output
+
+   def getWeight(self, connectionID):
+      return self.inputConnections[connectionID][1]
 
    def getConnectedNeuron(self, connectionID):
       return self.inputConnections[connectionID][0]
@@ -93,7 +103,7 @@ class Neuron:
    def adjustBias(self, amount):
       self.setBias(self.bias + amount)
 
-   # Toggle-able randomized weights is mostly a debug feature. Could be useful though
+   # Toggleable randomized weights is mostly a debug feature. Could be useful though
    def connectTo(self, neurons: list, randomWeights: bool = False):
       for n in neurons:
          if randomWeights:

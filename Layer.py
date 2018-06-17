@@ -28,6 +28,7 @@ class Layer:
       Neuron.staticID = temp
       return output
 
+   # Connect one layer to another.
    def connectTo(self, layer, randomizeWeights: bool = False):
       for n in self.neurons:
          n.connectTo(layer.neurons, randomizeWeights)
@@ -39,6 +40,7 @@ class Layer:
          print("----------------                       ----------------")
       print()
 
+   # Calls each neuron's calulate function
    def calculate(self):
       for n in self.neurons:
          n.calculate()
