@@ -96,9 +96,7 @@ class Neuron:
    def setBias(self, newBias):
       if newBias < -1:
          self.bias = -1
-      elif newBias > 1 :
-         self.bias = 1
-      else:
+      elif newBias >= 1 :
          self.bias = 1
 
    def adjustBias(self, amount):

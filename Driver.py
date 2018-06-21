@@ -64,7 +64,6 @@ decoder = TrainingData()
 decoder_testing = TrainingData()
 
 decoder.append(DataPoint([0.0],[1,0,0,0,0,0,0,0,0,0,0]))
-
 decoder.append(DataPoint([0.1],[0,1,0,0,0,0,0,0,0,0,0]))
 decoder.append(DataPoint([0.2],[0,0,1,0,0,0,0,0,0,0,0]))
 decoder.append(DataPoint([0.3],[0,0,0,1,0,0,0,0,0,0,0]))

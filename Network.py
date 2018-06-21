@@ -145,11 +145,13 @@ class Network:
    # --------------------------------------------------------
 
    # Input is based on the output of changeRandomWeight()
-   def revertWeight(self, revertList):
+   @staticmethod
+   def revertWeight(revertList):
       revertList[0].setWeight(revertList[1],revertList[2])
 
    # Input is based on the output of changeRandomBias()
-   def revertBias(self, revertList):
+   @staticmethod
+   def revertBias(revertList):
       revertList[0].setBias(revertList[1])
 
    #---------------------------------------------------------
@@ -174,7 +176,7 @@ class Network:
    def getLargestLayer(self):
       largest = self.layers[0]
       for l in self.layers:
-         if(l.size > largest.size):
+         if l.size > largest.size:
             largest = l
       return largest
 
