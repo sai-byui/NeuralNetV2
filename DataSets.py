@@ -26,15 +26,50 @@ def adding():
 
 
 
+def subtract():
+	# Subtracts to random numbers
+
+	random.seed(time.time())
+
+	subtract_train = TrainingData()
+	subtract_test = TrainingData()
+
+	for i in range(100):
+		a = random.random()
+		b = random.random()
+		subtract_train.append(DataPoint([a, b], [a - b]))
+
+		a = random.random()
+		b = random.random()
+		subtract_test.append(DataPoint([a, b], [a - b]))
+
+	# return a tuple of the training data and testing data
+	return subtract_train, subtract_test
+
+
+
 def power():
 	# Raises one number to the power of another number
 
-	power_traing = TrainingData()
-	power_testing = TrainingData()
+	random.seed(time.time())
+
+	power_train = TrainingData()
+	power_test = TrainingData()
+	
+	for i in range(100):
+		a = random.random()
+		b = random.random()
+		power_train.append(DataPoint([a, b], [a ** b]))
+
+		a = random.random()
+		b = random.random()
+		power_test.append(DataPoint([a, b], [a ** b]))
+		
+	return power_train, power_test
 
 
 
-def decoder(size):
+def decoder():
 	# Makes a binary decoder of size size
 
 	decoder_training = TrainingData()

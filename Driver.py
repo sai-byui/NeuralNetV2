@@ -3,6 +3,7 @@ from Layer import Layer
 from Network import Network
 from TrainingData import TrainingData, DataPoint
 from Trainer import Particle_Swarm, GeneticTrainer
+import DataSets
 
 import random
 import sys, pygame
@@ -39,88 +40,13 @@ learnAdd.update()
 # Training Data #
 #===============#
 
-truth_table = TrainingData()
-truth_table_testing = TrainingData()
-##Inputs: 0 and 1  Expected outputs:and, or, nand, xor
-truth_table.append(DataPoint([0, 0, 0, 0], [0, 0, 1, 0]))
-truth_table.append(DataPoint([0, 0, 0, 1], [0, 1, 1, 1]))
-truth_table.append(DataPoint([0, 0, 1, 0], [0, 1, 1, 1]))
-truth_table.append(DataPoint([0, 0, 1, 1], [0, 1, 1, 0]))
-truth_table.append(DataPoint([0, 1, 0, 0], [0, 1, 1, 1]))
-truth_table.append(DataPoint([0, 1, 0, 1], [0, 1, 1, 0]))
-truth_table.append(DataPoint([0, 1, 1, 0], [0, 1, 1, 0]))
-truth_table.append(DataPoint([0, 1, 1, 1], [0, 1, 1, 1]))
-truth_table.append(DataPoint([1, 0, 0, 0], [0, 1, 1, 1]))
-truth_table.append(DataPoint([1, 0, 0, 1], [0, 1, 1, 0]))
-truth_table.append(DataPoint([1, 0, 1, 0], [0, 1, 1, 0]))
-truth_table.append(DataPoint([1, 0, 1, 1], [0, 1, 1, 1]))
-truth_table.append(DataPoint([1, 1, 0, 0], [0, 1, 1, 0]))
-truth_table.append(DataPoint([1, 1, 0, 1], [0, 1, 1, 1]))
-truth_table.append(DataPoint([1, 1, 1, 0], [0, 1, 1, 1]))
-truth_table.append(DataPoint([1, 1, 1, 1], [1, 1, 0, 0]))
+# Broke out DataSets into a different file to allow easy swapping of data sets
 
+truth_table, truth_table_testing = DataSets.and_or_nand_xor()
 
-decoder = TrainingData()
-decoder_testing = TrainingData()
+decoder, decoder_testing = DataSets.decoder()
 
-decoder.append(DataPoint([0.0],[1,0,0,0,0,0,0,0,0,0,0]))
-decoder.append(DataPoint([0.1],[0,1,0,0,0,0,0,0,0,0,0]))
-decoder.append(DataPoint([0.2],[0,0,1,0,0,0,0,0,0,0,0]))
-decoder.append(DataPoint([0.3],[0,0,0,1,0,0,0,0,0,0,0]))
-decoder.append(DataPoint([0.4],[0,0,0,0,1,0,0,0,0,0,0]))
-decoder.append(DataPoint([0.5],[0,0,0,0,0,1,0,0,0,0,0]))
-decoder.append(DataPoint([0.6],[0,0,0,0,0,0,1,0,0,0,0]))
-decoder.append(DataPoint([0.7],[0,0,0,0,0,0,0,1,0,0,0]))
-decoder.append(DataPoint([0.8],[0,0,0,0,0,0,0,0,1,0,0]))
-decoder.append(DataPoint([0.9],[0,0,0,0,0,0,0,0,0,1,0]))
-decoder.append(DataPoint([1.0],[0,0,0,0,0,0,0,0,0,0,1]))
-
-adder = TrainingData()
-adder_testing = TrainingData()
-
-for i in range(100):
-   a = random.random()
-   b = random.random()
-   adder.append(DataPoint([a,b],[a+b]))
-
-   a = random.random()
-   b = random.random()
-   adder_testing.append(DataPoint([a,b],[a+b]))
-
-# adder.append(DataPoint([0.0,0.0],[0.0]))
-
-# adder.append(DataPoint([1.0,0.0],[1.0]))
-# adder.append(DataPoint([0.9,0.1],[1.0]))
-# adder.append(DataPoint([0.8,0.2],[1.0]))
-# adder.append(DataPoint([0.7,0.3],[1.0]))
-# adder.append(DataPoint([0.6,0.4],[1.0]))
-# adder.append(DataPoint([0.5,0.5],[1.0]))
-# adder.append(DataPoint([0.4,0.6],[1.0]))
-# adder.append(DataPoint([0.3,0.7],[1.0]))
-# adder.append(DataPoint([0.2,0.8],[1.0]))
-# adder.append(DataPoint([0.1,0.9],[1.0]))
-# adder.append(DataPoint([0.0,1.0],[1.0]))
-
-# adder.append(DataPoint([0.5,0.0],[0.5]))
-# adder.append(DataPoint([0.4,0.1],[0.5]))
-# adder.append(DataPoint([0.3,0.2],[0.5]))
-# adder.append(DataPoint([0.2,0.3],[0.5]))
-# adder.append(DataPoint([0.1,0.4],[0.5]))
-# adder.append(DataPoint([0.0,0.5],[0.5]))
-
-# adder.append(DataPoint([0.5,0.1],[0.6]))
-# adder.append(DataPoint([0.3,0.1],[0.4]))
-# adder.append(DataPoint([0.1,0.1],[0.2]))
-# adder.append(DataPoint([0.2,0.4],[0.6]))
-# adder.append(DataPoint([0.5,0.4],[0.9]))
-# adder.append(DataPoint([0.4,0.3],[0.7]))
-
-# adder_testing.append(DataPoint([0.4,0.2],[0.6]))
-# adder_testing.append(DataPoint([0.2,0.1],[0.3]))
-# adder_testing.append(DataPoint([0.1,0.6],[0.7]))
-# adder_testing.append(DataPoint([0.9,0.0],[0.6]))
-# adder_testing.append(DataPoint([0.7,0.2],[0.9]))
-# adder_testing.append(DataPoint([0.1,0.3],[0.4]))
+adder, adder_testing = DataSets.adding()
 
 # trainer = Particle_Swarm(10, learnTruth, truth_table,truth_table_testing)
 trainer = GeneticTrainer(learnTruth,truth_table,truth_table_testing)
