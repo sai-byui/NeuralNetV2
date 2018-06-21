@@ -5,7 +5,7 @@ import random
 
 
 def adding():
-	# Adds to random numbers together
+	# Adds two random numbers together
 
 	random.seed(time.time())
 
@@ -27,7 +27,7 @@ def adding():
 
 
 def subtract():
-	# Subtracts to random numbers
+	# Subtracts two random numbers
 
 	random.seed(time.time())
 
@@ -65,6 +65,27 @@ def power():
 		b = random.random()
 		power_test.append(DataPoint([a, b], [a ** b]))
 		
+	return power_train, power_test
+
+
+
+def average():
+	# Raises one number to the power of another number
+
+	random.seed(time.time())
+
+	power_train = TrainingData()
+	power_test = TrainingData()
+
+	for i in range(100):
+		a = random.random()
+		b = random.random()
+		power_train.append(DataPoint([a, b], [(a + b) / 2 ]))
+
+		a = random.random()
+		b = random.random()
+		power_test.append(DataPoint([a, b], [(a + b) / 2]))
+
 	return power_train, power_test
 
 
