@@ -57,14 +57,13 @@ class Layer:
 
    def randomizeWeights(self):
       for n in self.neurons:
-         n.randomizeWeights();
+         n.randomizeWeights()
 
    def normalize(self):
       largest = self.getLargest().value
       if abs(largest) > 1:
          for n in self.neurons:
             n.value = n.value/largest
-
 
    def getLargest(self):
       large = self.neurons[0]
@@ -86,6 +85,7 @@ class Layer:
             return n
       return None
 
+   @staticmethod
    def create(size):
       neurons = []
       temp = Neuron.staticID

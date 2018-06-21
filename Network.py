@@ -84,14 +84,14 @@ class Network:
       self.inputs.setValues(values)
 
    def getOutputs(self):
-      return outputs.getValues()
+      return self.outputs.getValues()
 
    def randomizeWeights(self):
       for i,l in enumerate(self.layers):
          if i > 0:
             l.randomizeWeights()
 
-   def randomizBias(self):
+   def randomizeBias(self):
       for i,l in enumerate(self.layers):
          if i > 0:
             for n in l.neurons:
@@ -147,6 +147,7 @@ class Network:
    # Input is based on the output of changeRandomWeight()
    def revertWeight(self, revertList):
       revertList[0].setWeight(revertList[1],revertList[2])
+
    # Input is based on the output of changeRandomBias()
    def revertBias(self, revertList):
       revertList[0].setBias(revertList[1])
@@ -163,7 +164,7 @@ class Network:
       largest = self.layers[0].neurons[0].value
       for l in self.layers:
          for n in l.neurons:
-            if(abs(n.value) > abs(largest)):
+            if abs(n.value) > abs(largest):
                largest = n.value
       if abs(largest) > 1:
          for l in self.layers:
@@ -192,6 +193,7 @@ class Network:
             # print("%d i: %d j: %d" % ((i-j),i,j))
             self.layers[layerNumber].connectTo(self.layers[layerNumber-j], randomWeights)
 
+   @staticmethod
    def connectLayerExternal(layerList, layerNumber, randomWeights = False):
       if layerNumber > 0:
          # layerList[layerNumber].connectTo(layerList[layerNumber - 1],randomWeights)
@@ -203,11 +205,12 @@ class Network:
    def connectLayers(self, randomWeights = False):
       for i in range(len(self.layers)):
          self.connectLayer(i,randomWeights)
-   # -----------------------------------------------------------------------------------------------------
 
+   # -----------------------------------------------------------------------------------------------------
    # Returns a fresh network from a list of layer sizes.
    # This is different from the constructor since the constructor takes 
    # -------------------------------------------------
+   @staticmethod
    def create(layerSizes: list, randomWeights = False):
       layers = []
       temp = Layer.staticID # We'll store the global ID and set it back later

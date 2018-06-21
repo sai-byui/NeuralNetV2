@@ -47,7 +47,7 @@ class Neuron:
          self.setWeight(c,otherNeuron.getWeight(c))
 
    def calculate(self):
-      if(len(self.inputConnections) > 0):
+      if len(self.inputConnections) > 0 :
          self.value = 0
          for c in self.inputConnections:
             self.value += c[0].value * c[1]
@@ -86,7 +86,7 @@ class Neuron:
    def getConnectedNeuron(self, connectionID):
       return self.inputConnections[connectionID][0]
 
-   def randomizeWeights(self, seed = 0):
+   def randomizeWeights(self):
       for c in self.inputConnections:
          c[1] = random.uniform(-1,1)
 
@@ -94,10 +94,11 @@ class Neuron:
       return self.bias
 
    def setBias(self, newBias):
-      self.bias = newBias
-      if(self.bias < -1):
+      if newBias < -1:
          self.bias = -1
-      elif(self.bias > 1):
+      elif newBias > 1 :
+         self.bias = 1
+      else:
          self.bias = 1
 
    def adjustBias(self, amount):

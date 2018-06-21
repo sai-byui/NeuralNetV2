@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 from Layer import Layer
 from Network import Network
 from TrainingData import TrainingData, DataPoint
@@ -6,7 +7,7 @@ from Trainer import Particle_Swarm, GeneticTrainer
 import random
 import sys, pygame
 import time
-from math import sqrt, e
+
 
 VERBOSE_ERROR = True
 
@@ -197,6 +198,11 @@ while 1:
       network_in = trainer.testing_data.get_inputs()[tCase % trainer.testing_data.size]
    elif trainer.training_data.size > 0:
       network_in = trainer.training_data.get_inputs()[tCase % trainer.training_data.size]
+   else:
+      if untrained_toggle:
+         raise Exception("testing_data is size zero")
+      else:
+         raise Exception("training_data is size zero")
 
    if input_toggle:
       trainer.network.setInputs(network_in)
@@ -212,7 +218,7 @@ while 1:
    if trainer.error >= 0.0001: 
 
       if VERBOSE_ERROR:
-         if not(t % 80) and not(untrained_toggle): 
+         if not(t % 80) and not untrained_toggle :
             print()
             print(str(trainer.network.ID) + ":" + str(trainer.error))
          sys.stdout.write('.')
