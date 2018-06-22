@@ -188,12 +188,7 @@ class Network:
    # Layer connection code. Some changes may be needed to smooth changing layer connection archetectures
    # ----------------------------------------------------------------------------------------------------
    def connectLayer(self, layerNumber, randomWeights = False):
-      if layerNumber > 0:
-         # self.layers[layerNumber].connectTo(self.layers[layerNumber - 1],randomWeights)
-         for j in range(layerNumber ,0,-1):
-            ## Debug
-            # print("%d i: %d j: %d" % ((i-j),i,j))
-            self.layers[layerNumber].connectTo(self.layers[layerNumber-j], randomWeights)
+      Network.connectLayerExternal(self.layers, layerNumber, randomWeights)
 
    @staticmethod
    def connectLayerExternal(layerList, layerNumber, randomWeights = False):
