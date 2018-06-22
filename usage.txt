@@ -12,4 +12,3 @@ i       iterate display to a different test case
 d       display the current values of the network
 t       test your network
 r       reset the network
-SPACE   display a different view of the network

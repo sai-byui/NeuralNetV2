@@ -4,6 +4,7 @@ from Network import Network
 from TrainingData import TrainingData, DataPoint
 from Trainer import Particle_Swarm, GeneticTrainer
 import DataSets
+from View import getGraphic
 
 import random
 import sys, pygame
@@ -21,7 +22,6 @@ random.seed(time.time())
 Network.DEFAULT_WEIGHT = 0
 
 learnDecode = Network.create([1,6,6,11,11])
-
 learnDecode.update()
 
 learnTruth = Network.create([4,8,8,4])
@@ -62,7 +62,7 @@ trainer = GeneticTrainer(learnTruth,truth_table,truth_table_testing)
 #=============
 pygame.init()
 
-graphic = trainer.network.getGraphic()
+graphic = getGraphic(trainer.network)
 size = width, height = graphic.get_width(), graphic.get_height()
 
 background_img = pygame.image.load("Recources/61581d98e54acca.jpg")
@@ -132,9 +132,9 @@ while 1:
    if input_toggle:
       trainer.network.setInputs(network_in)
       trainer.network.update()
-      graphic = trainer.network.getGraphic()
+      graphic = getGraphic(trainer.network)
    else: # Let's just see what it's up to
-      graphic = trainer.network.getGraphic()
+      graphic = getGraphic(trainer.network)
 
    screen.blit(back_surface,[0,0])
    screen.blit(graphic,[0,0])
