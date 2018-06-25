@@ -5,45 +5,50 @@ import time
 
 
 class layerThread(threading.Thread):
-	def __init__(self, threadID, q, name):
+	def __init__(self, threadID, q):
 		threading.Thread.__init__(self)
 		self.threadID = threadID
 		self.q = q
-		self.name = name
 
 	def run(self):
-		if self.name != "":
-			print(self.name + " standing by")
-		else:
-			print("Thread "+ self.threadID + " Starting")
+		print( "thread "+ str(self.threadID) + " starting" )
 
-		time.sleep(10)
+		total = 0
 
-		print(self.name + " starting attack run")
+		while self.q.qsize() > 0 :
+			total += self.q.get()
+			time.sleep(.1)
 
-		time.sleep(5)
-
-		if self.name == "jar jar binks":
-			print("Meesa coming home")
-		else:
-			print(self.name + "coming home safely")
+		print("thread "+ str(self.threadID) +" got"+ str(total))
 
 
 
-def calculateLayer():
+def calculateLayer(listOfNodes):
 
-	Q = queue.Queue()
+	Q = queue.Queue(101)
 	threadCount = 4
 	threads = []
-	names = ["red leader", "blue leader", "gold leader", "jar jar binks"]
+
+	for x in listOfNodes:
+		Q.put(x)
 
 	# thread setup
 	for t in range(threadCount):
-		this_thread = layerThread(t, Q, names[t] )
-		this_thread.start()
-		time.sleep(2)
+		this_thread = layerThread(t, Q)
+		threads.append(this_thread)
 
 
+
+	# start the threads
+	for x in threads:
+		x.start()
+
+
+	# start back up once all of these threads have finished
+	for i in threads:
+		i.join()
+
+	print("*** all threads done ***")
 
 if __name__ == "__main__":
-	calculateLayer()
+	calculateLayer([x for x in range(100)])
