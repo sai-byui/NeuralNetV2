@@ -5,7 +5,7 @@ import sys
 
 
 def getGraphic(network):
-	r = 20  # Draw radius of a neuron. Everything is scaled to this value
+	r = 30  # Draw radius of a neuron. Everything is scaled to this value
 	buff = r + 10  # Give the sides some space
 	largest = network.getLargestLayer()
 

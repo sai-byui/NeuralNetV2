@@ -40,6 +40,7 @@ class Layer:
          print("----------------                       ----------------")
       print()
 
+   # Threading here
    # Calls each neuron's calulate function
    def calculate(self):
       for n in self.neurons:
