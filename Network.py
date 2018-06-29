@@ -84,14 +84,14 @@ class Network:
       self.inputs.setValues(values)
 
    def getOutputs(self):
-      return outputs.getValues()
+      return self.outputs.getValues()
 
    def randomizeWeights(self):
       for i,l in enumerate(self.layers):
          if i > 0:
             l.randomizeWeights()
 
-   def randomizBias(self):
+   def randomizeBias(self):
       for i,l in enumerate(self.layers):
          if i > 0:
             for n in l.neurons:
@@ -145,10 +145,13 @@ class Network:
    # --------------------------------------------------------
 
    # Input is based on the output of changeRandomWeight()
-   def revertWeight(self, revertList):
+   @staticmethod
+   def revertWeight(revertList):
       revertList[0].setWeight(revertList[1],revertList[2])
+
    # Input is based on the output of changeRandomBias()
-   def revertBias(self, revertList):
+   @staticmethod
+   def revertBias(revertList):
       revertList[0].setBias(revertList[1])
 
    #---------------------------------------------------------
@@ -163,7 +166,7 @@ class Network:
       largest = self.layers[0].neurons[0].value
       for l in self.layers:
          for n in l.neurons:
-            if(abs(n.value) > abs(largest)):
+            if abs(n.value) > abs(largest):
                largest = n.value
       if abs(largest) > 1:
          for l in self.layers:
@@ -173,7 +176,7 @@ class Network:
    def getLargestLayer(self):
       largest = self.layers[0]
       for l in self.layers:
-         if(l.size > largest.size):
+         if l.size > largest.size:
             largest = l
       return largest
 
@@ -185,13 +188,9 @@ class Network:
    # Layer connection code. Some changes may be needed to smooth changing layer connection archetectures
    # ----------------------------------------------------------------------------------------------------
    def connectLayer(self, layerNumber, randomWeights = False):
-      if layerNumber > 0:
-         # self.layers[layerNumber].connectTo(self.layers[layerNumber - 1],randomWeights)
-         for j in range(layerNumber ,0,-1):
-            ## Debug
-            # print("%d i: %d j: %d" % ((i-j),i,j))
-            self.layers[layerNumber].connectTo(self.layers[layerNumber-j], randomWeights)
+      Network.connectLayerExternal(self.layers, layerNumber, randomWeights)
 
+   @staticmethod
    def connectLayerExternal(layerList, layerNumber, randomWeights = False):
       if layerNumber > 0:
          # layerList[layerNumber].connectTo(layerList[layerNumber - 1],randomWeights)
@@ -203,11 +202,12 @@ class Network:
    def connectLayers(self, randomWeights = False):
       for i in range(len(self.layers)):
          self.connectLayer(i,randomWeights)
-   # -----------------------------------------------------------------------------------------------------
 
+   # -----------------------------------------------------------------------------------------------------
    # Returns a fresh network from a list of layer sizes.
    # This is different from the constructor since the constructor takes 
    # -------------------------------------------------
+   @staticmethod
    def create(layerSizes: list, randomWeights = False):
       layers = []
       temp = Layer.staticID # We'll store the global ID and set it back later
@@ -223,60 +223,3 @@ class Network:
          l.networkID = output.ID
       Layer.staticID = temp
       return output
-   # ---------------------------------------------------
-
-   # Pygame stuff :)
-   # ---------------------------------------------
-   def getGraphic(self):
-      r = 10 # Draw radius of a neuron. Everything is scaled to this value
-      buff = r + 10 # Give the sides some space
-      largest = self.getLargestLayer()
-
-      # Set the surface size to be just big enough for the network
-      size = width, height = int((self.size-1)*(8*r)) + buff*2, int((largest.size-1)*(2.5*r) + buff*2)
-      surface = pygame.Surface(size,pygame.SRCALPHA) #<== note: the pygame.SRCALPHA allows for alpha drawing
-
-      # Need to store the starting y-position of current and previous layers... for connections
-      offset = 0
-      offset2 = 0
-
-      for x in range(len(self.layers)):
-         diff = largest.size - self.layers[x].size # Size difference between the current layer and the largest one
-         offset = diff/2                        # Offset for the smaller layers to center them
-
-         for y in range(len(self.layers[x].neurons)):
-            # Big long positional maths relating x and y to r
-            pos = [int(x*(8*r) + buff),int((y+offset)*(2.5*r) + buff)]
-
-            n = self.layers[x].neurons[y]
-
-            for i in range(len(self.layers[x].neurons[y].inputConnections)):
-               if x > 0:
-                  weight = n.getWeight(i)
-                  n2 = n.getConnectedNeuron(i)
-                  n2_size = self.layers[n2.layerID].size
-                  offset2 = (largest.size - n2_size) / 2
-
-                  cval = int(sigmoid(weight * 2)*255)
-                  alpha = int(abs(2*sigmoid(weight * 2) - 1) * 255)
-                  color = pygame.Color(cval,cval,cval)
-
-                  pos2 = [int(n2.layerID*(8*r) + buff),int(((i % n2_size)+offset2)*(2.5*r) + buff)]
-
-                  pygame.draw.line(surface,color,pos,pos2,1)
-
-
-      for x in range(len(self.layers)):
-         diff = largest.size - self.layers[x].size # Size difference between the current layer and the largest one
-         offset = diff/2                        # Offset for the smaller layers to center them
-
-         for y in range(len(self.layers[x].neurons)):
-            # Big long positional maths relating x and y to r
-            pos = [int(x*(8*r) + buff),int((y+offset)*(2.5*r) + buff)]
-            n = self.layers[x].neurons[y]
-
-            cval = int(sigmoid(n.value * 2) * 255)
-            color = (cval,cval,cval,int(abs(2 * sigmoid(n.value * 2) - 1)*255))
-            pygame.draw.circle(surface,color,pos,r)
-            pygame.draw.circle(surface,(0,0,0),pos,r,2)
-      return surface

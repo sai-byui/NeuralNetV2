@@ -1,12 +1,15 @@
+#! /usr/bin/env python3
 from Layer import Layer
 from Network import Network
 from TrainingData import TrainingData, DataPoint
 from Trainer import Particle_Swarm, GeneticTrainer
+import DataSets
+from View import getGraphic
 
 import random
 import sys, pygame
 import time
-from math import sqrt, e
+
 
 VERBOSE_ERROR = True
 
@@ -19,7 +22,6 @@ random.seed(time.time())
 Network.DEFAULT_WEIGHT = 0
 
 learnDecode = Network.create([1,6,6,11,11])
-
 learnDecode.update()
 
 learnTruth = Network.create([4,8,8,4])
@@ -38,89 +40,13 @@ learnAdd.update()
 # Training Data #
 #===============#
 
-truth_table = TrainingData()
-truth_table_testing = TrainingData()
-##Inputs: 0 and 1  Expected outputs:and, or, nand, xor
-truth_table.append(DataPoint([0, 0, 0, 0], [0, 0, 1, 0]))
-truth_table.append(DataPoint([0, 0, 0, 1], [0, 1, 1, 1]))
-truth_table.append(DataPoint([0, 0, 1, 0], [0, 1, 1, 1]))
-truth_table.append(DataPoint([0, 0, 1, 1], [0, 1, 1, 0]))
-truth_table.append(DataPoint([0, 1, 0, 0], [0, 1, 1, 1]))
-truth_table.append(DataPoint([0, 1, 0, 1], [0, 1, 1, 0]))
-truth_table.append(DataPoint([0, 1, 1, 0], [0, 1, 1, 0]))
-truth_table.append(DataPoint([0, 1, 1, 1], [0, 1, 1, 1]))
-truth_table.append(DataPoint([1, 0, 0, 0], [0, 1, 1, 1]))
-truth_table.append(DataPoint([1, 0, 0, 1], [0, 1, 1, 0]))
-truth_table.append(DataPoint([1, 0, 1, 0], [0, 1, 1, 0]))
-truth_table.append(DataPoint([1, 0, 1, 1], [0, 1, 1, 1]))
-truth_table.append(DataPoint([1, 1, 0, 0], [0, 1, 1, 0]))
-truth_table.append(DataPoint([1, 1, 0, 1], [0, 1, 1, 1]))
-truth_table.append(DataPoint([1, 1, 1, 0], [0, 1, 1, 1]))
-truth_table.append(DataPoint([1, 1, 1, 1], [1, 1, 0, 0]))
+# Broke out DataSets into a different file to allow easy swapping of data sets
 
+truth_table, truth_table_testing = DataSets.and_or_nand_xor()
 
-decoder = TrainingData()
-decoder_testing = TrainingData()
+decoder, decoder_testing = DataSets.decoder()
 
-decoder.append(DataPoint([0.0],[1,0,0,0,0,0,0,0,0,0,0]))
-
-decoder.append(DataPoint([0.1],[0,1,0,0,0,0,0,0,0,0,0]))
-decoder.append(DataPoint([0.2],[0,0,1,0,0,0,0,0,0,0,0]))
-decoder.append(DataPoint([0.3],[0,0,0,1,0,0,0,0,0,0,0]))
-decoder.append(DataPoint([0.4],[0,0,0,0,1,0,0,0,0,0,0]))
-decoder.append(DataPoint([0.5],[0,0,0,0,0,1,0,0,0,0,0]))
-decoder.append(DataPoint([0.6],[0,0,0,0,0,0,1,0,0,0,0]))
-decoder.append(DataPoint([0.7],[0,0,0,0,0,0,0,1,0,0,0]))
-decoder.append(DataPoint([0.8],[0,0,0,0,0,0,0,0,1,0,0]))
-decoder.append(DataPoint([0.9],[0,0,0,0,0,0,0,0,0,1,0]))
-decoder.append(DataPoint([1.0],[0,0,0,0,0,0,0,0,0,0,1]))
-
-adder = TrainingData()
-adder_testing = TrainingData()
-
-for i in range(100):
-   a = random.random()
-   b = random.random()
-   adder.append(DataPoint([a,b],[a+b]))
-
-   a = random.random()
-   b = random.random()
-   adder_testing.append(DataPoint([a,b],[a+b]))
-
-# adder.append(DataPoint([0.0,0.0],[0.0]))
-
-# adder.append(DataPoint([1.0,0.0],[1.0]))
-# adder.append(DataPoint([0.9,0.1],[1.0]))
-# adder.append(DataPoint([0.8,0.2],[1.0]))
-# adder.append(DataPoint([0.7,0.3],[1.0]))
-# adder.append(DataPoint([0.6,0.4],[1.0]))
-# adder.append(DataPoint([0.5,0.5],[1.0]))
-# adder.append(DataPoint([0.4,0.6],[1.0]))
-# adder.append(DataPoint([0.3,0.7],[1.0]))
-# adder.append(DataPoint([0.2,0.8],[1.0]))
-# adder.append(DataPoint([0.1,0.9],[1.0]))
-# adder.append(DataPoint([0.0,1.0],[1.0]))
-
-# adder.append(DataPoint([0.5,0.0],[0.5]))
-# adder.append(DataPoint([0.4,0.1],[0.5]))
-# adder.append(DataPoint([0.3,0.2],[0.5]))
-# adder.append(DataPoint([0.2,0.3],[0.5]))
-# adder.append(DataPoint([0.1,0.4],[0.5]))
-# adder.append(DataPoint([0.0,0.5],[0.5]))
-
-# adder.append(DataPoint([0.5,0.1],[0.6]))
-# adder.append(DataPoint([0.3,0.1],[0.4]))
-# adder.append(DataPoint([0.1,0.1],[0.2]))
-# adder.append(DataPoint([0.2,0.4],[0.6]))
-# adder.append(DataPoint([0.5,0.4],[0.9]))
-# adder.append(DataPoint([0.4,0.3],[0.7]))
-
-# adder_testing.append(DataPoint([0.4,0.2],[0.6]))
-# adder_testing.append(DataPoint([0.2,0.1],[0.3]))
-# adder_testing.append(DataPoint([0.1,0.6],[0.7]))
-# adder_testing.append(DataPoint([0.9,0.0],[0.6]))
-# adder_testing.append(DataPoint([0.7,0.2],[0.9]))
-# adder_testing.append(DataPoint([0.1,0.3],[0.4]))
+adder, adder_testing = DataSets.adding()
 
 # trainer = Particle_Swarm(10, learnTruth, truth_table,truth_table_testing)
 trainer = GeneticTrainer(learnTruth,truth_table,truth_table_testing)
@@ -136,7 +62,7 @@ trainer = GeneticTrainer(learnTruth,truth_table,truth_table_testing)
 #=============
 pygame.init()
 
-graphic = trainer.network.getGraphic()
+graphic = getGraphic(trainer.network)
 size = width, height = graphic.get_width(), graphic.get_height()
 
 background_img = pygame.image.load("Recources/61581d98e54acca.jpg")
@@ -170,6 +96,8 @@ done = False
 # Loop
 #==============================================
 while 1:
+
+   # input loop
    for event in pygame.event.get():
       if event.type == pygame.QUIT: 
          sys.exit()
@@ -197,13 +125,18 @@ while 1:
       network_in = trainer.testing_data.get_inputs()[tCase % trainer.testing_data.size]
    elif trainer.training_data.size > 0:
       network_in = trainer.training_data.get_inputs()[tCase % trainer.training_data.size]
+   else:
+      if untrained_toggle:
+         raise Exception("testing_data is size zero")
+      else:
+         raise Exception("training_data is size zero")
 
    if input_toggle:
       trainer.network.setInputs(network_in)
       trainer.network.update()
-      graphic = trainer.network.getGraphic()
+      graphic = getGraphic(trainer.network)
    else: # Let's just see what it's up to
-      graphic = trainer.network.getGraphic()
+      graphic = getGraphic(trainer.network)
 
    screen.blit(back_surface,[0,0])
    screen.blit(graphic,[0,0])
@@ -212,7 +145,7 @@ while 1:
    if trainer.error >= 0.0001: 
 
       if VERBOSE_ERROR:
-         if not(t % 80) and not(untrained_toggle): 
+         if not(t % 80) and not untrained_toggle :
             print()
             print(str(trainer.network.ID) + ":" + str(trainer.error))
          sys.stdout.write('.')
